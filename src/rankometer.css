@@ -1,0 +1,18 @@
+.rkm-background {
+  background-color: black;
+}
+.rkm-item {
+  fill: black;
+}
+.rkm-item-highlight {
+  fill: orange;
+}
+.rkm-item-label {
+  text-anchor: middle;
+  alignment-baseline: central;
+  fill: rgb(38, 38, 38);
+  font-family: Helvetica, Arial;
+}
+.rkm-item-label-highlight {
+  fill: black;
+}
