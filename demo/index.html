@@ -15,32 +15,51 @@
 <body>
   <script>
     var dataset = [
-        ['a', 'b', 'c', 'd'],
-        ['a', 'b', 'c', 'e'],
         ['a', 'b', 'f', 'g'],
-        ['a', 'b', 'f', 'x'],
-        ['a', 'b', 'f', 'f']
+        ['Kobe Briant', 'b', 'f', 'x']
     ];
+    var h = 500;
+    var w = 500;
+
+    var getColumnWidthPercentage = function(n, margin, dividerByColumn) {
+      // Solve this equation:
+      // 2 * margin + n * x + (n - 1) * x * dividerByColumn = 1
+      return (1 - 2 * margin)/(n + (n - 1) * dividerByColumn);
+    };
+
+    var getRowHeightPercentage = function(m, marginTop, marginBotton, dividerByRow) {
+      return (1 - marginTop - marginBotton)/( m + (m - 1) * dividerByRow);
+    }
+
+    var margin = 0.05;
+    var marginTop = 0.3;
+    var marginBotton = 0.05;
+
+    var dividerByColumn = 0.05;
+    var dividerByRow = 0.10;
+    var marginPx = margin * w;
+    var columnWidthPx = w * getColumnWidthPercentage(dataset.length, margin, dividerByColumn);
+    var dividerWidthPx = columnWidthPx * dividerByColumn;
+    var m = 4;
+    var rowHeightPx = h * getRowHeightPercentage(m, marginTop, marginBotton, dividerByRow);
+    var dividerHeightPx = rowHeightPx * dividerByRow;
+    var xscale = function(c) {
+      return marginPx + c * (columnWidthPx + dividerWidthPx);
+    };
+    var yscale = function(r) {
+      return r * (rowHeightPx + dividerHeightPx);
+    };
+
     var svg = d3.select("body")
             .append("svg")
             .attr("class", "rkm-background")
-            .attr("width", 500)
-            .attr("height", 500);
-    var groups = svg.selectAll('g.rkm-year-group')
+            .attr("width", w)
+            .attr("height", h);
+    var groups = svg.selectAll('g.rkm-column')
       .data(dataset)
       .enter()
       .append("g")
-      .attr("class", "year-group")
-      .attr("x", function(d, i) {
-        return i * (100+10);
-      })
-      .attr("y", function(d, i) {
-        return 0;
-      })
-      .attr("width", 100)
-      .attr("height", function(d, i) {
-        return 400;
-      });
+      .attr("class", "rmk-column");
 
     groups.each(function(year_data, year_index) {
       d3.select(this)
@@ -50,13 +69,29 @@
         .append("rect")
         .attr("class", "rkm-item")
         .attr("x", function(d) {
-          return year_index * (100 + 10);
+          return xscale(year_index);
         })
         .attr("y", function(d, i) {
-           return i * (40 + 5);
+           return yscale(i);
          })
-         .attr("width", 100)
+         .attr("width", columnWidthPx)
          .attr("height", 40);
+
+      d3.select(this)
+        .selectAll("text.rkm-item-label")
+        .data(year_data)
+        .enter()
+        .append("text")
+        .attr("class", "rmk-item-label")
+        .attr("x", function(d) {
+          return xscale(year_index) + 10;
+        })
+        .attr("y", function(d, i) {
+          return yscale(i) + 20;
+        })
+        .text(function(d) {
+          return d;
+        });
     })
   //  svg.selectAll("rect")
   //     .data(dataset[1][1])
