@@ -16,8 +16,8 @@ var plot = function(targetSelectorStr, data, layout) {
   var svg = d3.select(targetSelectorStr)
           .append("svg")
           .attr("class", "rkm-background")
-          .attr("width", layout.width)
-          .attr("height", layout.height);
+          .attr("viewBox", "0 0 " + layout.width + " " + layout.height)
+          .attr("preserveAspectRatio", "xMinYMin meet");
   var columns = svg.selectAll("g.rkm-column")
     .data(data.ranks)
     .enter()
